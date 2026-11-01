@@ -1,7 +1,7 @@
 #!/bin/sh
 set -e
 cd "$(dirname "$0")"
-mkdir -p dist/assets/tex
+rm -rf dist; mkdir -p dist/assets/tex
 npx esbuild src/main.js --bundle --minify --format=iife --target=es2020 --outfile=dist/game.js --log-level=warning
 cp src/index.html dist/index.html
 cp public/assets/tex/*.jpg public/assets/tex/*.png dist/assets/tex/

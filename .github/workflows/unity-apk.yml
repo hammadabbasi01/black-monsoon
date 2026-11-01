@@ -1,0 +1,47 @@
+name: Build Unity APK
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['unity/**', '.github/workflows/unity-apk.yml']
+jobs:
+  unity-android:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+      UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+    steps:
+      - name: Check Unity license secrets
+        if: env.UNITY_LICENSE == ''
+        run: |
+          echo "::warning::Add UNITY_LICENSE, UNITY_EMAIL and UNITY_PASSWORD in repo Settings > Secrets > Actions to build the Unity APK."
+      - uses: jlumbroso/free-disk-space@v1.3.1
+        if: env.UNITY_LICENSE != ''
+        with: { tool-cache: false, android: false }
+      - uses: actions/checkout@v4
+        if: env.UNITY_LICENSE != ''
+      - uses: actions/cache@v4
+        if: env.UNITY_LICENSE != ''
+        with:
+          path: unity/Library
+          key: Library-Android-${{ hashFiles('unity/Assets/**', 'unity/Packages/**') }}
+          restore-keys: Library-Android-
+      - uses: game-ci/unity-builder@v4
+        if: env.UNITY_LICENSE != ''
+        with:
+          projectPath: unity
+          targetPlatform: Android
+          buildMethod: BuildScript.BuildAndroid
+      - uses: actions/upload-artifact@v4
+        if: env.UNITY_LICENSE != ''
+        with: { name: BlackMonsoon-Unity-apk, path: unity/build/Android/BlackMonsoon-Unity.apk }
+      - uses: softprops/action-gh-release@v2
+        if: env.UNITY_LICENSE != ''
+        with:
+          tag_name: unity-build-${{ github.run_number }}
+          name: Black Monsoon (Unity) - build ${{ github.run_number }}
+          files: unity/build/Android/BlackMonsoon-Unity.apk
+          make_latest: false

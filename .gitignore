@@ -1,3 +1,9 @@
 node_modules/
 web/dist/
 web/android/
+unity/Library/
+unity/Temp/
+unity/Logs/
+unity/obj/
+unity/build/
+unity/UserSettings/

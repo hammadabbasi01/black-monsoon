@@ -44,8 +44,20 @@ export const Assets = {
     })));
   },
 
-  async loadModel(name, file) {
-    const gltf = await new GLTFLoader().loadAsync(BASE + file);
+  // Model ships as JSON {gltf, bin(base64)} plus separate texture files, so nothing is fetched from data: URIs
+  // (the artifact sandbox blocks those). The GLB is rebuilt in memory and parsed directly.
+  async loadModel(name, file, maps = {}) {
+    const pkg = await (await fetch(BASE + file)).json();
+    const bin = Uint8Array.from(atob(pkg.bin), (c) => c.charCodeAt(0));
+    let js = new TextEncoder().encode(JSON.stringify(pkg.gltf)); const jl = (js.length + 3) & ~3; const bl = (bin.length + 3) & ~3;
+    const glb = new Uint8Array(12 + 8 + jl + 8 + bl); const dv = new DataView(glb.buffer);
+    dv.setUint32(0, 0x46546c67, true); dv.setUint32(4, 2, true); dv.setUint32(8, glb.length, true);
+    dv.setUint32(12, jl, true); dv.setUint32(16, 0x4e4f534a, true); glb.fill(0x20, 20, 20 + jl); glb.set(js, 20);
+    const bo = 20 + jl; dv.setUint32(bo, bl, true); dv.setUint32(bo + 4, 0x004e4942, true); glb.set(bin, bo + 8);
+    const gltf = await new GLTFLoader().parseAsync(glb.buffer, BASE);
+    const map = maps.map ? this.tex(maps.map) : null, nmap = maps.normal ? this.tex(maps.normal, { srgb: false }) : null;
+    for (const t of [map, nmap]) if (t) { t.flipY = false; t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping; t.needsUpdate = true; }
+    gltf.scene.traverse((o) => { if (o.isMesh) { if (map) o.material.map = map; if (nmap) o.material.normalMap = nmap; o.material.needsUpdate = true; } });
     this.models[name] = gltf;
     return gltf;
   },

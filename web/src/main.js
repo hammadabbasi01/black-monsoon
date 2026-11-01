@@ -53,7 +53,7 @@ async function boot() {
     setLoad(0.02, 'Loading textures…');
     const tex = ['asph_c.jpg', 'asph_n.jpg', 'asph_r.jpg', 'concrete_c.jpg', 'concrete_n.jpg', 'concrete_r.jpg', 'cont_c.jpg', 'cont_n.jpg', 'cont_r.jpg', 'corr_c.jpg', 'corr_n.jpg', 'corr_r.jpg', 'ship_c.jpg', 'ship_n.jpg', 'hull_c.jpg', 'hull_n.jpg', 'deck_c.jpg', 'deck_n.jpg', 'plank_c.jpg', 'plank_n.jpg', 'rock_c.jpg', 'rock_n.jpg', 'mud_c.jpg', 'mud_n.jpg', 'panel_c.jpg', 'panel_n.jpg', 'panel_r.jpg', 'floor_c.jpg', 'floor_n.jpg', 'floor_r.jpg', 'ceil_c.jpg', 'ceil_n.jpg', 'fabric.jpg', 'fabric_n.jpg', 'grunge.jpg', 'flash.png', 'glow.png', 'smoke.png', 'hole.png', 'cone.png', 'pool.png', 'sky.jpg', 'skyline.png', 'water_n.jpg'];
     await Assets.preloadTextures(tex, (p) => setLoad(0.05 + p * 0.5, 'Loading textures…'));
-    setLoad(0.6, 'Loading soldiers…'); await Assets.loadModel('soldier', 'soldier.json');
+    setLoad(0.6, 'Loading soldiers…'); await Assets.loadModel('soldier', 'soldier.json', { map: 'soldier_c.jpg', normal: 'soldier_n.jpg' });
     setLoad(0.8, 'Loading night sky…'); await Assets.loadEnv(engine.renderer, 'night_env.png');
     setLoad(1, 'Ready.'); $('playBtn').disabled = false; $('introBtn').disabled = false;
     setTimeout(() => ($('loadBox').style.visibility = 'hidden'), 600);
