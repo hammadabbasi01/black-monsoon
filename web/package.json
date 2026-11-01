@@ -1,0 +1,22 @@
+{
+  "name": "black-monsoon",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "sh build.sh"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "esbuild": "0.24.0",
+    "three": "0.170.0",
+    "@capacitor/core": "6.1.2",
+    "@capacitor/android": "6.1.2"
+  },
+  "private": true,
+  "devDependencies": {
+    "@capacitor/cli": "6.1.2"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "appId": "com.srca.blackmonsoon",
+  "appName": "Black Monsoon",
+  "webDir": "dist",
+  "server": { "androidScheme": "https" }
+}
